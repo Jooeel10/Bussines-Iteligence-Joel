@@ -1,0 +1,371 @@
+# app.js
+
+```javascript
+/*
+  app.js
+  - Sencilla app cliente (HTML + JS) para limpiar un CSV de ventas (ventas_raw.csv)
+  - No necesita backend. Compatible con GitHub Pages.
+  - Autores: diseñado para estudiantes de servicio de restauración / BI educativo.
+*/
+
+// -------------------- Helpers: CSV parsing / serializing --------------------
+
+// Parse CSV supporting quoted fields (simple but robust for common files)
+function parseCSV(text) {
+  const rows = [];
+  const re = /(?:\s*"([^"\\]*(?:\\.[^"\\]*)*)"\s*|\s*([^,]+)\s*|\s*)(?:,|$)/g;
+  const lines = text.split(/\r?\n/);
+  let headers = null;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    const row = [];
+    let m;
+    re.lastIndex = 0;
+    while ((m = re.exec(line)) && m.index < line.length) {
+      const val = m[1] !== undefined ? m[1] : (m[2] !== undefined ? m[2] : '');
+      row.push(val);
+      // prevent infinite loop
+      if (m[0].length === 0) break;
+    }
+    // If regex didn't work well, fallback to simple split
+    if (row.length === 0) {
+      const fallback = line.split(',').map(s => s.replace(/^"|"$/g,'').trim());
+      rows.push(fallback);
+      continue;
+    }
+    if (!headers) {
+      headers = row.map(h => h.trim());
+    } else {
+      // If row has fewer fields, pad
+      while (row.length < headers.length) row.push('');
+      const obj = {};
+      for (let j = 0; j < headers.length; j++) obj[headers[j]] = row[j];
+      rows.push(obj);
+    }
+  }
+  return { headers, rows };
+}
+
+function serializeCSV(headers, rows) {
+  const esc = (val) => {
+    if (val === null || val === undefined) return '';
+    const s = String(val);
+    if (s.includes(',') || s.includes('\n') || s.includes('"')) {
+      return '"' + s.replace(/"/g,'""') + '"';
+    }
+    return s;
+  };
+  const lines = [];
+  lines.push(headers.join(','));
+  for (const r of rows) {
+    lines.push(headers.map(h => esc(r[h])).join(','));
+  }
+  return lines.join('\n');
+}
+
+// -------------------- Normalización y validación --------------------
+
+function parseDateFlexible(s) {
+  // Try native parse first
+  if (!s) return null;
+  s = s.trim();
+  let d = new Date(s);
+  if (!isNaN(d)) return d;
+  // Try dd/mm/yyyy or d/m/yyyy
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if (m) {
+    let day = parseInt(m[1],10), month = parseInt(m[2],10) - 1, year = parseInt(m[3],10);
+    if (year < 100) year += 2000;
+    d = new Date(year, month, day);
+    if (!isNaN(d)) return d;
+  }
+  return null;
+}
+
+function normalizeFranja(s) {
+  if (!s) return null;
+  const t = s.toString().trim().toLowerCase();
+  if (t.includes('desay') || t.includes('break')) return 'Desayuno';
+  if (t.includes('alm') || t.includes('comid') || t.includes('lunch')) return 'Comida';
+  // Fallback to Comida
+  return 'Comida';
+}
+
+function normalizeFamilia(s) {
+  if (!s) return null;
+  const t = s.toString().trim().toLowerCase();
+  if (t.includes('bebid') || t.includes('drink')) return 'Bebida';
+  if (t.includes('entra') || t.includes('starter') || t.includes('appet')) return 'Entrante';
+  if (t.includes('princ') || t.includes('main') || t.includes('plato')) return 'Principal';
+  if (t.includes('post') || t.includes('dessert')) return 'Postre';
+  // Unable to map -> return null so row will be removed
+  return null;
+}
+
+function normalizeProduct(s) {
+  if (!s) return '';
+  let t = s.toString();
+  // remove extra spaces and weird uppercase
+  t = t.replace(/\s+/g,' ').trim();
+  t = t.toLowerCase();
+  // Title case (first letter of each word uppercase)
+  t = t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  return t;
+}
+
+// -------------------- Main cleaning pipeline --------------------
+
+function cleanData(rawRows) {
+  const beforeCount = rawRows.length;
+  const cleaned = [];
+  const seen = new Set();
+
+  for (const r of rawRows) {
+    // Work on a shallow copy
+    const row = Object.assign({}, r);
+
+    // Fecha -> Date válido
+    const parsedDate = parseDateFlexible(row['fecha']);
+    if (!parsedDate) continue; // eliminar fila
+    row['fecha'] = parsedDate.toISOString().slice(0,10); // normalizamos a YYYY-MM-DD
+
+    // Franja
+    const fr = normalizeFranja(row['franja']);
+    if (!fr) continue;
+    row['franja'] = fr;
+
+    // Familia
+    const fam = normalizeFamilia(row['familia']);
+    if (!fam) continue; // eliminar si no se puede normalizar
+    row['familia'] = fam;
+
+    // Producto vacío?
+    if (!row['producto'] || !row['producto'].toString().trim()) continue;
+    row['producto'] = normalizeProduct(row['producto']);
+
+    // Unidades y precio_unitario
+    const unidades = Number(String(row['unidades']).replace(',', '.'));
+    const precio = Number(String(row['precio_unitario']).replace(',', '.'));
+    if (isNaN(unidades) || unidades <= 0) continue;
+    if (isNaN(precio) || precio <= 0) continue;
+    row['unidades'] = unidades;
+    row['precio_unitario'] = Number(precio.toFixed(2));
+
+    // Recalcular importe
+    const importe = Number((unidades * precio).toFixed(2));
+    row['importe'] = importe;
+
+    // Eliminar duplicados exactos (por campos clave)
+    const key = [row['fecha'], row['franja'], row['producto'], row['familia'], row['unidades'], row['precio_unitario'], row['importe']].join('|');
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    cleaned.push(row);
+  }
+
+  return { beforeCount, afterCount: cleaned.length, cleaned };
+}
+
+// -------------------- KPIs y visualización --------------------
+
+function computeKPIs(cleaned) {
+  const k = { ventasTotales:0, unidadesTotales:0, byProduct: {}, byFranja: {}, byFamilia: {} };
+  for (const r of cleaned) {
+    k.ventasTotales += Number(r['importe']);
+    k.unidadesTotales += Number(r['unidades']);
+
+    // Producto
+    const p = r['producto'];
+    k.byProduct[p] = (k.byProduct[p] || 0) + Number(r['importe']);
+    // Franja
+    const f = r['franja'];
+    k.byFranja[f] = (k.byFranja[f] || 0) + Number(r['importe']);
+    // Familia
+    const fam = r['familia'];
+    k.byFamilia[fam] = (k.byFamilia[fam] || 0) + Number(r['importe']);
+  }
+  // Top 5 productos
+  const topProducts = Object.entries(k.byProduct).map(([p,v]) => ({producto:p, importe:v}))
+    .sort((a,b)=>b.importe-a.importe).slice(0,5);
+  return { ...k, ventasTotales: Number(k.ventasTotales.toFixed(2)), topProducts };
+}
+
+// -------------------- DOM helpers --------------------
+
+function renderKPIs(kpis) {
+  const container = document.getElementById('kpis');
+  container.innerHTML = '';
+  const create = (title, value) => {
+    const el = document.createElement('div'); el.className='kpi';
+    el.innerHTML = `<strong>${value}</strong><div class="small">${title}</div>`;
+    return el;
+  };
+  container.appendChild(create('Ventas totales (€)', kpis.ventasTotales.toLocaleString('es-ES', {style:'currency', currency:'EUR'})));
+  container.appendChild(create('Unidades totales', kpis.unidadesTotales));
+  // Top 5 list
+  const top = document.createElement('div'); top.className='kpi';
+  top.innerHTML = `<strong>Top 5 productos</strong><div class="small">${kpis.topProducts.map(t=>`${t.producto} (${t.importe.toFixed(2)}€)`).join('<br>')}</div>`;
+  container.appendChild(top);
+}
+
+function makeTableFromObjects(list, containerId, maxRows=10) {
+  const container = document.getElementById(containerId);
+  if (!list || list.length===0) { container.innerHTML = '<div class="small">(sin filas)</div>'; return; }
+  const headers = Object.keys(list[0]);
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const trh = document.createElement('tr');
+  for (const h of headers) { const th = document.createElement('th'); th.textContent = h; trh.appendChild(th);} thead.appendChild(trh); table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  for (let i = 0; i < Math.min(maxRows, list.length); i++) {
+    const row = list[i]; const tr = document.createElement('tr');
+    for (const h of headers) { const td = document.createElement('td'); td.textContent = row[h]; tr.appendChild(td); }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  container.innerHTML = '';
+  container.appendChild(table);
+}
+
+// -------------------- Charts (Chart.js) --------------------
+let chartTop5 = null, chartFranja = null, chartFamilia = null;
+function drawCharts(kpis) {
+  // Top 5 productos (barras)
+  const topLabels = kpis.topProducts.map(t=>t.producto);
+  const topValues = kpis.topProducts.map(t=>t.importe.toFixed(2));
+  const ctxTop = document.getElementById('chartTop5').getContext('2d');
+  if (chartTop5) chartTop5.destroy();
+  chartTop5 = new Chart(ctxTop, {
+    type: 'bar',
+    data: { labels: topLabels, datasets: [{ label: 'Importe (€)', data: topValues }] },
+    options: { responsive:true, maintainAspectRatio:false }
+  });
+
+  // Ventas por franja (pie)
+  const frLabels = Object.keys(kpis.byFranja);
+  const frValues = frLabels.map(k => Number(kpis.byFranja[k].toFixed(2)));
+  const ctxFr = document.getElementById('chartFranja').getContext('2d');
+  if (chartFranja) chartFranja.destroy();
+  chartFranja = new Chart(ctxFr, {
+    type: 'pie',
+    data: { labels: frLabels, datasets: [{ data: frValues }] },
+    options: { responsive:true, maintainAspectRatio:false }
+  });
+
+  // Ventas por familia (pie)
+  const faLabels = Object.keys(kpis.byFamilia);
+  const faValues = faLabels.map(k => Number(kpis.byFamilia[k].toFixed(2)));
+  const ctxFa = document.getElementById('chartFamilia').getContext('2d');
+  if (chartFamilia) chartFamilia.destroy();
+  chartFamilia = new Chart(ctxFa, {
+    type: 'pie',
+    data: { labels: faLabels, datasets: [{ data: faValues }] },
+    options: { responsive:true, maintainAspectRatio:false }
+  });
+}
+
+// -------------------- File load / UI flow --------------------
+
+async function loadFromUrl(url='ventas_raw.csv') {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('No se pudo cargar ' + url);
+    const text = await res.text();
+    return text;
+  } catch (err) {
+    console.warn('Error cargando desde URL', err);
+    throw err;
+  }
+}
+
+function handleFileUpload(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file, 'UTF-8');
+  });
+}
+
+let lastCleanedRows = null; // para descarga
+
+async function runPipelineFromText(csvText) {
+  // Parse CSV
+  const parsed = parseCSV(csvText);
+  const rawRows = parsed.rows;
+
+  // Show first 10 raw
+  makeTableFromObjects(rawRows.slice(0,10), 'rawTable', 10);
+
+  // Cleaning
+  const { beforeCount, afterCount, cleaned } = cleanData(rawRows);
+  lastCleanedRows = cleaned; // guardar
+
+  document.getElementById('counts').textContent = `Filas: antes = ${beforeCount}, después = ${afterCount}`;
+
+  // Show first 10 cleaned
+  makeTableFromObjects(cleaned.slice(0,10), 'cleanTable', 10);
+
+  // KPIs
+  const kpis = computeKPIs(cleaned);
+  renderKPIs(kpis);
+  drawCharts(kpis);
+}
+
+// UI events
+document.getElementById('reloadBtn').addEventListener('click', async () => {
+  try {
+    const text = await loadFromUrl('ventas_raw.csv');
+    await runPipelineFromText(text);
+  } catch (err) {
+    alert('No se pudo cargar ventas_raw.csv desde la misma carpeta. Puedes subir el archivo manualmente.');
+  }
+});
+
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', async (e) => {
+  if (!e.target.files || e.target.files.length === 0) return;
+  const f = e.target.files[0];
+  try {
+    const text = await handleFileUpload(f);
+    await runPipelineFromText(text);
+  } catch (err) {
+    alert('Error leyendo el archivo: '+err.message);
+  }
+});
+
+// Descargar CSV limpio
+document.getElementById('downloadCleanBtn').addEventListener('click', () => {
+  if (!lastCleanedRows) { alert('Aún no hay datos limpios. Carga ventas_raw.csv o sube un archivo.'); return; }
+  // Aseguramos columnas en el orden esperado
+  const headers = ['fecha','franja','producto','familia','unidades','precio_unitario','importe'];
+  const rows = lastCleanedRows.map(r => {
+    return {
+      fecha: r.fecha,
+      franja: r.franja,
+      producto: r.producto,
+      familia: r.familia,
+      unidades: r.unidades,
+      precio_unitario: r.precio_unitario,
+      importe: r.importe
+    };
+  });
+  const csv = serializeCSV(headers, rows);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'ventas_clean.csv';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+
+// Auto-intento al cargar la página: intenta fetch desde ventas_raw.csv
+window.addEventListener('load', async () => {
+  try {
+    const text = await loadFromUrl('ventas_raw.csv');
+    await runPipelineFromText(text);
+  } catch (err) {
+    // No mostrar error intrusivo: el usuario puede subir el archivo manualmente
+    console.log('No se pudo cargar ventas_raw.csv automáticamente:', err.message);
+  }
+});
+```
