@@ -153,8 +153,21 @@ data:{
 labels:labels,
 datasets:[{
 label:"Ventas €",
-data:data
+data:data,
+backgroundColor:[
+"#4CAF50",
+"#2196F3",
+"#FFC107",
+"#FF5722",
+"#9C27B0"
+]
 }]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{display:false}
+}
 }
 })
 
