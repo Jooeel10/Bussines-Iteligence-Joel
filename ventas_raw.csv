@@ -1,0 +1,131 @@
+fecha,franja,producto,familia,unidades,precio_unitario,importe
+2025-12-12,Desayuno,Zumo naranja,Bebida,3,1.8,5.4
+2025/99/99,Desayuno,Bocadillo jamón,Principal,4,4.2,17.4
+2025-12-27,Comida,Bocadillo jamón,Principal,4,4.2,16.8
+2025-11-07,Desayuno,Menú del día,Principal,4,9.5,38.0
+2025-12-31, COMIDA,Bocadillo pollo,Principal,5,4.5,22.5
+2025-10-05, COMIDA,Yogur,Postre,2,1.9,3.8
+2025-11-26,Desayuno, ,Bebida,2,-1.2,-2.4
+2025-12-14, COMIDA,Yogur,Entrante,2,1.9,3.8
+2025-11-15, COMIDA,Yogur,Postre,3,1.9,5.7
+2025-10-17,Comida,Flan,Postre,4,2.2,8.8
+2025-11-14,Desayuno,Bocadillo jamón,Principal,5,4.2,21.0
+2025-10-12,desayuno, ,Bebida,1,-1.8,-1.8
+2025-12-19,Comida,Cafe ,Bebida,3,1.2,3.6
+2025-12-03, COMIDA,Bocadillo pollo,Principal,0,4.5,0.0
+2025-12-17, COMIDA,Tostada,Entrante,1,2.0,2.0
+2025-11-27,Comida,Flan,Postre,5,2.2,10.19
+2025/99/99,Desayuno,Café,Bebida,1,1.2,2.71
+2025-12-12, COMIDA,Tostada,Entrante,2,-2.0,-4.0
+2025-12-26, COMIDA,Yogur,Postre,5,1.9,9.5
+2025-10-03,Comida,Tostada tomate,Entrante,2,2.5,5.0
+2025-12-10,desayuno,Bocadillo jamón,Principal,5,4.2,21.0
+2025-11-04,desayuno,Tostada,Entrante,5,2.0,10.0
+2025-10-18,Desayuno,Menú del día,Principal,0,9.5,0.0
+2025-10-10,Comida,Bocadillo jamón,Principal,5,4.2,21.0
+2025-11-07,Desayuno,Café,Bebida,5,-1.2,-6.0
+2025-10-21,Desayuno,Bocadillo jamón,Principal,4,4.2,16.8
+2025-12-10,desayuno, ,Entrante,4,2.5,10.0
+2025-11-27, COMIDA,Bocadillo pollo,Principal,3,4.5,13.5
+2025-12-28, COMIDA,Flan,Postre,3,2.2,6.6
+2025-10-12,desayuno,Menú del día,Principal,2,9.5,19.0
+2025/99/99,Desayuno,Bocadillo pollo,Principal,2,4.5,9.0
+2025-11-07,desayuno,Café,Bebida,4,1.2,4.8
+2025-10-20,Comida,Zumo naranja,Bebida,3,1.8,5.4
+2025-11-10,Comida,Café,Postr,2,1.2,2.4
+2025-12-10,desayuno,Bocadillo jamón,Principal,5,4.2,21.0
+2025-10-03,Desayuno,Yogur,Postre,3,1.9,5.7
+2025-10-30, COMIDA,Cafe ,Bebida,1,1.2,1.2
+2025-12-03, COMIDA,Bocadillo pollo,Principal,2,4.5,9.0
+2025-12-05,desayuno,Cafe ,Bebida,2,1.2,2.4
+2025-12-16,Desayuno,Menú del día,Principal,1,9.5,9.5
+2025-12-03, COMIDA,Café,Bebida,3,1.2,2.62
+2025-10-18,Desayuno,Cafe ,Bebida,4,1.2,4.8
+2025-10-17, COMIDA,Menú del día,Principal,2,9.5,19.0
+2025-10-25, COMIDA,Café,Bebida,0,1.2,0.0
+2025-11-09,desayuno,Tostada tomate,Entrante,4,2.5,10.0
+2025-11-19,Comida,Yogur,bebidas,3,1.9,5.7
+2025-10-10,desayuno,Zumo naranja,Bebida,5,1.8,9.0
+2025/99/99, COMIDA,Bocadillo pollo,Principal,3,4.5,13.5
+2025-12-21,Comida,Tostada tomate,Entrante,4,2.5,10.0
+2025-10-26,desayuno,Flan,Postre,0,2.2,0.0
+2025-12-03,Comida,Cafe ,Bebida,3,1.2,3.6
+2025-12-17,Desayuno,Cafe ,Bebida,3,1.2,3.6
+2025-11-29,Desayuno,Zumo naranja,Bebida,3,1.8,5.43
+2025-11-21,desayuno,Cafe ,Bebida,5,1.2,6.0
+2025-11-29,Desayuno,Bocadillo pollo,Principal,2,4.5,9.0
+2025/99/99, COMIDA,Bocadillo jamón,Principal,3,4.2,12.6
+2025-11-21,desayuno,Yogur,Postre,4,1.9,7.6
+2025-10-19,desayuno,Yogur,Postre,4,1.9,7.6
+2025-12-31,desayuno,Tostada,Entrante,1,2.0,2.39
+2025-12-27,Desayuno,Tostada,Entrante,4,2.0,8.0
+2025-10-13,Comida,Zumo naranja,Bebida,4,1.8,7.2
+2025-10-28, COMIDA,Bocadillo jamón,Principal,3,-4.2,-12.6
+2025-11-19,desayuno,Bocadillo pollo,Principal,2,4.5,7.58
+2025/99/99, COMIDA,Café,Bebida,3,-1.2,-2.24
+2025-10-16, COMIDA,Tostada tomate,Entrante,1,2.5,2.5
+2025-12-20,desayuno,Bocadillo pollo,Principal,3,4.5,13.5
+2025-12-21,Desayuno,Flan,Postre,3,2.2,5.67
+2025-11-02,Comida,Cafe ,Bebida,1,1.2,2.45
+2025-10-13,desayuno,Bocadillo pollo,Principal,,4.5,0.0
+2025-11-04,Desayuno,Flan,Postre,3,2.2,6.6
+2025-10-15,desayuno,Bocadillo jamón,Principal,1,4.2,4.2
+2025-12-01,Desayuno,Yogur,Postre,2,1.9,3.8
+2025-10-21,Comida,Tostada tomate,Entrante,3,2.5,7.5
+2025-11-10, COMIDA,Flan,Postre,3,-2.2,-6.6
+2025-11-11,Desayuno,Bocadillo pollo,Principal,4,4.5,18.0
+2025-10-08,Comida,Yogur,Postre,1,1.9,1.9
+2025-11-21,desayuno, ,Principal,4,4.5,18.0
+2025-10-24, COMIDA,Cafe ,Bebida,0,1.2,0.0
+2025-12-22,Desayuno,Flan,Postre,1,2.2,2.2
+2025-12-30,desayuno,Menú del día,Principal,2,9.5,19.0
+2025-12-01,Desayuno,Tostada,Entrante,,2.0,0.46
+2025-12-14, COMIDA,Yogur,Principal,1,1.9,1.9
+2025-11-10,desayuno,Flan,Postre,5,2.2,11.0
+2025-12-04, COMIDA,Zumo naranja,Bebida,5,-1.8,-9.0
+2025-11-17, COMIDA, ,Bebida,4,1.2,2.82
+2025-11-17, COMIDA,Tostada tomate,Entrante,3,2.5,7.5
+2025-10-17,desayuno,Bocadillo pollo,Principal,4,4.5,18.0
+2025-11-21, COMIDA,Menú del día,Principal,0,9.5,0.0
+2025-11-21,Comida,Cafe ,Bebida,1,1.2,1.2
+2025-12-10, COMIDA,Cafe ,Bebida,1,1.2,0.06
+2025-10-16, COMIDA,Bocadillo jamón,Principal,3,4.2,12.6
+2025-10-22,desayuno,Tostada,Entrante,4,2.0,8.0
+2025-11-13, COMIDA,Yogur,Postre,0,1.9,0.0
+2025-11-08,Desayuno,Menú del día,Principal,2,9.5,19.0
+2025-12-08,Comida,Café,Bebida,4,1.2,4.8
+2025-12-17,Comida,Zumo naranja,Principal,5,1.8,9.0
+2025-11-10, COMIDA,Tostada,Entrante,4,2.0,8.0
+2025-10-23,Desayuno,Yogur,Postre,2,1.9,3.8
+2025-10-29,Desayuno,Yogur,Postre,2,1.9,3.8
+2025-10-18,Desayuno,Bocadillo pollo,Principal,3,4.5,13.5
+2025-11-04,Desayuno,Tostada,Entrante,0,2.0,0.0
+2025-10-02,desayuno,Tostada tomate,Entrante,1,2.5,2.5
+2025-12-19, COMIDA,Yogur,Postre,5,1.9,9.5
+2025-10-23,Comida,Cafe ,bebidas,2,1.2,2.4
+2025-11-17,Desayuno,Cafe ,Bebida,5,1.2,6.0
+2025-10-20,Desayuno,Zumo naranja,Bebida,5,1.8,9.0
+2025-10-20, COMIDA,Zumo naranja,Bebida,4,1.8,7.2
+2025-10-02,Comida, ,Postre,4,2.2,8.8
+2025-11-22, COMIDA,Bocadillo pollo,Principal,5,4.5,22.5
+2025-10-18,desayuno,Yogur,Postre,5,1.9,9.5
+2025-10-31,Desayuno, ,Postre,5,1.9,9.5
+2025-12-24,Desayuno,Tostada tomate,Entrante,5,2.5,12.5
+2025-10-19,Desayuno,Flan,Postre,3,2.2,6.6
+2025-10-03, COMIDA,Yogur,Postre,2,1.9,3.8
+2025-12-26, COMIDA,Tostada,Entrante,4,2.0,8.0
+2025-11-04,Comida,Menú del día,Principal,0,9.5,0.0
+2025-11-06,Comida, ,Postre,2,2.2,4.4
+2025-12-08, COMIDA,Tostada,Entrante,1,2.0,2.0
+2025-12-11,Comida,Flan,Postre,,-2.2,-0.0
+2025/99/99,Desayuno, ,Postre,2,2.2,5.66
+2025-10-31,Desayuno,Flan,Postre,1,2.2,2.2
+2025-12-08, COMIDA,Bocadillo pollo,Principal,5,4.5,22.5
+2025-11-03,desayuno,Zumo naranja,Bebida,2,1.8,3.6
+2025-12-12, COMIDA,Tostada tomate,Entrante,1,2.5,2.5
+2025-12-31,Comida,Bocadillo jamón,Principal,5,4.2,21.0
+2025-11-21, COMIDA,Café,Bebida,4,1.2,4.8
+2025-10-26, COMIDA,Tostada tomate,Entrante,3,2.5,7.5
+2025-10-27, COMIDA,Tostada tomate,Entrante,1,2.5,2.5
+2025-10-21,Comida,Bocadillo pollo,Principal,1,4.5,4.5
+2025-11-19,Comida,Tostada,Entrante,,2.0,0.0
